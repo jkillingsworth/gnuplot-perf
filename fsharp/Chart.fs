@@ -5,7 +5,7 @@ open System.IO
 
 //-------------------------------------------------------------------------------------------------
 
-let private template = @"
+let private plotTemplate = @"
 set terminal svg size 720 405 font 'monospace'
 set encoding utf8
 set output '{0}'
@@ -85,6 +85,6 @@ let createPlot outputPath lines index =
     let count = lines.Length
 
     let path = Path.GetFullPath(outputPath)
-    let plot = String.Format(template, path, data0, data1, count, index)
+    let plot = String.Format(plotTemplate, path, data0, data1, count, index)
 
     plot

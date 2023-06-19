@@ -5,7 +5,7 @@ using System.Linq;
 
 internal static class Chart
 {
-    private const string template = @"
+    private const string plotTemplate = @"
 set terminal svg size 720 405 font 'monospace'
 set encoding utf8
 set output '{0}'
@@ -89,7 +89,7 @@ exit
         var count = lines.Length;
 
         var path = Path.GetFullPath(outputPath);
-        var plot = string.Format(template, path, data0, data1, count, index);
+        var plot = string.Format(plotTemplate, path, data0, data1, count, index);
 
         return plot;
     }

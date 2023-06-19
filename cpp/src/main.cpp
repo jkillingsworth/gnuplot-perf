@@ -13,8 +13,6 @@ constexpr auto n = 100;
 constexpr auto gnuplot_exe_path_542 = "C:\\gnuplot542\\bin\\gnuplot.exe";
 constexpr auto gnuplot_exe_path_546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
-std::string plots[n];
-
 //-------------------------------------------------------------------------------------------------
 
 void handle_error(const auto)
@@ -88,39 +86,39 @@ void render(const std::string& gnuplot_exe_path, const std::string& plot)
 
 //-------------------------------------------------------------------------------------------------
 
-void run_542()
+void run_seq(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots)
 {
     std::cout << std::endl;
-    std::cout << "Gnuplot version: 5.4.2" << std::endl;
-    std::cout << "Execution mode: sequential" << std::endl;
+    std::cout << "Gnuplot executable path: " << gnuplot_exe_path << std::endl;
+    std::cout << "Execution mode for test: sequential" << std::endl;
     std::cout << "Running";
     auto time_start = std::chrono::high_resolution_clock::now();
 
     for (const auto& plot : plots)
     {
         std::cout << ".";
-        render(gnuplot_exe_path_542, plot);
+        render(gnuplot_exe_path, plot);
     }
 
     auto time_final = std::chrono::high_resolution_clock::now();
     auto time_total = std::chrono::duration<double>(time_final - time_start);
     std::cout << std::endl;
-    std::cout << "Charts generated: " << n << std::endl;
-    std::cout << "Elapsed time: " << time_total << std::endl;
+    std::cout << "Number of plots created: " << n << std::endl;
+    std::cout << "Elapsed time in seconds: " << time_total.count() << std::endl;
 }
 
-void run_542_parallel()
+void run_par(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots)
 {
     std::cout << std::endl;
-    std::cout << "Gnuplot version: 5.4.2" << std::endl;
-    std::cout << "Execution mode: parallel" << std::endl;
+    std::cout << "Gnuplot executable path: " << gnuplot_exe_path << std::endl;
+    std::cout << "Execution mode for test: parallel" << std::endl;
     std::cout << "Running";
     auto time_start = std::chrono::high_resolution_clock::now();
 
-    auto action = [](const auto& plot) -> void
+    auto action = [&](const auto& plot) -> void
     {
         std::cout << ".";
-        render(gnuplot_exe_path_542, plot);
+        render(gnuplot_exe_path, plot);
     };
 
     std::for_each(std::execution::par, std::begin(plots), std::end(plots), action);
@@ -128,52 +126,8 @@ void run_542_parallel()
     auto time_final = std::chrono::high_resolution_clock::now();
     auto time_total = std::chrono::duration<double>(time_final - time_start);
     std::cout << std::endl;
-    std::cout << "Charts generated: " << n << std::endl;
-    std::cout << "Elapsed time: " << time_total << std::endl;
-}
-
-void run_546()
-{
-    std::cout << std::endl;
-    std::cout << "Gnuplot version: 5.4.6" << std::endl;
-    std::cout << "Execution mode: sequential" << std::endl;
-    std::cout << "Running";
-    auto time_start = std::chrono::high_resolution_clock::now();
-
-    for (const auto& plot : plots)
-    {
-        std::cout << ".";
-        render(gnuplot_exe_path_546, plot);
-    }
-
-    auto time_final = std::chrono::high_resolution_clock::now();
-    auto time_total = std::chrono::duration<double>(time_final - time_start);
-    std::cout << std::endl;
-    std::cout << "Charts generated: " << n << std::endl;
-    std::cout << "Elapsed time: " << time_total << std::endl;
-}
-
-void run_546_parallel()
-{
-    std::cout << std::endl;
-    std::cout << "Gnuplot version: 5.4.6" << std::endl;
-    std::cout << "Execution mode: parallel" << std::endl;
-    std::cout << "Running";
-    auto time_start = std::chrono::high_resolution_clock::now();
-
-    auto action = [](const auto& plot) -> void
-    {
-        std::cout << ".";
-        render(gnuplot_exe_path_546, plot);
-    };
-
-    std::for_each(std::execution::par, std::begin(plots), std::end(plots), action);
-
-    auto time_final = std::chrono::high_resolution_clock::now();
-    auto time_total = std::chrono::duration<double>(time_final - time_start);
-    std::cout << std::endl;
-    std::cout << "Charts generated: " << n << std::endl;
-    std::cout << "Elapsed time: " << time_total << std::endl;
+    std::cout << "Number of plots created: " << n << std::endl;
+    std::cout << "Elapsed time in seconds: " << time_total.count() << std::endl;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -183,6 +137,7 @@ int main()
     std::filesystem::create_directory("./output/");
     std::ifstream data("./data.csv");
     std::vector<std::string> lines;
+    std::vector<std::string> plots;
     std::string line;
 
     while (std::getline(data, line))
@@ -192,13 +147,15 @@ int main()
 
     for (auto i = 0; i < n; i++)
     {
-        plots[i] = chart::create_plot(std::format("./output/chart-{0:02}.svg", i), lines, i);
+        auto path = std::format("./output/chart-{0:02}.svg", i);
+        auto plot = chart::create_plot(path, lines, i);
+        plots.push_back(plot);
     }
 
-    run_542();
-    run_542_parallel();
-    run_546();
-    run_546_parallel();
+    run_seq(gnuplot_exe_path_542, plots);
+    run_par(gnuplot_exe_path_542, plots);
+    run_seq(gnuplot_exe_path_546, plots);
+    run_par(gnuplot_exe_path_546, plots);
 
     return 0;
 }
