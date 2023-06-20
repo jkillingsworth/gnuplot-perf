@@ -1,4 +1,4 @@
-﻿module Chart
+﻿module Gp.Chart
 
 open System
 open System.IO

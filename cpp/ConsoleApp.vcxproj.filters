@@ -11,18 +11,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\chart.h">
+    <ClInclude Include="src\gp_chart.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\proc.h">
+    <ClInclude Include="src\gp_proc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\chart.cpp">
+    <ClCompile Include="src\gp_chart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\proc.cpp">
+    <ClCompile Include="src\gp_proc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">

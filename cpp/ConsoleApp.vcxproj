@@ -151,12 +151,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\chart.h" />
-    <ClInclude Include="src\proc.h" />
+    <ClInclude Include="src\gp_chart.h" />
+    <ClInclude Include="src\gp_proc.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\chart.cpp" />
-    <ClCompile Include="src\proc.cpp" />
+    <ClCompile Include="src\gp_chart.cpp" />
+    <ClCompile Include="src\gp_proc.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

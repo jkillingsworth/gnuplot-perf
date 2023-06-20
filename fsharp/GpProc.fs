@@ -1,4 +1,4 @@
-﻿namespace global
+﻿namespace Gp
 
 open System
 open System.Diagnostics

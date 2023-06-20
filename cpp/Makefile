@@ -35,13 +35,13 @@ $(OBJ):
 $(BIN):
 	mkdir $(BIN)
 
-$(OBJ)/chart.o: chart.cpp chart.h
+$(OBJ)/gp_chart.o: gp_chart.cpp gp_chart.h
 	$(BUILDOBJ)
 
-$(OBJ)/proc.o: proc.cpp proc.h
+$(OBJ)/gp_proc.o: gp_proc.cpp gp_proc.h
 	$(BUILDOBJ)
 
-$(OBJ)/main.o: main.cpp chart.h proc.h
+$(OBJ)/main.o: main.cpp gp_chart.h gp_proc.h
 	$(BUILDOBJ)
 
 $(EXE): $(OBJFILES) | $(BIN)

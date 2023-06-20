@@ -1,6 +1,6 @@
 #include <iostream>
 #include <format>
-#include "proc.h"
+#include "gp_proc.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ void handle_error(const auto)
 
 //-------------------------------------------------------------------------------------------------
 
-proc::proc(const std::string& gnuplot_exe_path)
+gp::proc::proc(const std::string& gnuplot_exe_path)
 {
     SECURITY_ATTRIBUTES securityAttributes = {};
     securityAttributes.nLength = sizeof(SECURITY_ATTRIBUTES);
@@ -62,19 +62,19 @@ proc::proc(const std::string& gnuplot_exe_path)
     ));
 }
 
-void proc::write(const std::string& plot)
+void gp::proc::write(const std::string& plot)
 {
     handle_error(WriteFile(hPipeStdInW, plot.c_str(), (DWORD)plot.length(), NULL, NULL));
     handle_error(FlushFileBuffers(hPipeStdInW));
 }
 
-void proc::exit_wait()
+void gp::proc::exit_wait()
 {
     write("exit\n");
     handle_error(WaitForSingleObject(processInformation.hProcess, INFINITE));
 }
 
-proc::~proc()
+gp::proc::~proc()
 {
     handle_error(CloseHandle(processInformation.hProcess));
     handle_error(CloseHandle(processInformation.hThread));

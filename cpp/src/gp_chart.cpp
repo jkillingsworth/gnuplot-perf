@@ -7,7 +7,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-namespace chart
+namespace gp::chart
 {
     constexpr auto plot_template = R"(
 set terminal svg size 720 405 font 'monospace'

@@ -1,4 +1,6 @@
-﻿using System;
+﻿namespace Gp;
+
+using System;
 using System.Diagnostics;
 using System.Text;
 

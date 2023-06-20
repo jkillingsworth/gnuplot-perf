@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Chart.fs" />
-    <Compile Include="Proc.fs" />
+    <Compile Include="GpChart.fs" />
+    <Compile Include="GpProc.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

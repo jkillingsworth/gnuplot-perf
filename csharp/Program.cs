@@ -13,7 +13,7 @@ const string gnuplotExePath546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
 void Render(string gnuplotExePath, string plot)
 {
-    using var proc = new Proc(gnuplotExePath);
+    using var proc = new Gp.Proc(gnuplotExePath);
     proc.Write(plot);
     proc.ExitWait();
 }
@@ -70,7 +70,7 @@ var plots = new string[n];
 
 for (var i = 0; i < n; i++)
 {
-    plots[i] = Chart.CreatePlot($"./output/chart-{i:d2}.svg", lines, i);
+    plots[i] = Gp.Chart.CreatePlot($"./output/chart-{i:d2}.svg", lines, i);
 }
 
 RunSeq(gnuplotExePath542, plots);

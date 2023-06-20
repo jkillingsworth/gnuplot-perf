@@ -4,8 +4,8 @@
 #include <fstream>
 #include <format>
 #include <iostream>
-#include "chart.h"
-#include "proc.h"
+#include "gp_chart.h"
+#include "gp_proc.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ constexpr auto gnuplot_exe_path_546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
 void render(const std::string& gnuplot_exe_path, const std::string& plot)
 {
-    proc proc(gnuplot_exe_path);
+    auto proc = gp::proc(gnuplot_exe_path);
     proc.write(plot);
     proc.exit_wait();
 }
@@ -86,7 +86,7 @@ int main()
     for (auto i = 0; i < n; i++)
     {
         auto path = std::format("./output/chart-{0:02}.svg", i);
-        auto plot = chart::create_plot(path, lines, i);
+        auto plot = gp::chart::create_plot(path, lines, i);
         plots.push_back(plot);
     }
 

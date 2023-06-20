@@ -13,7 +13,7 @@ let gnuplotExePath546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
 let render gnuplotExePath plot =
 
-    use proc = new Proc(gnuplotExePath)
+    use proc = new Gp.Proc(gnuplotExePath)
     proc.Write(plot)
     proc.ExitAndWait()
 
@@ -59,7 +59,7 @@ let runPar gnuplotExePath plots =
 
 Directory.CreateDirectory("./output/") |> ignore
 let lines = File.ReadAllLines("./data.csv")
-let plots = Array.init n (fun i -> Chart.createPlot $"./output/chart-{i:d2}.svg" lines i)
+let plots = Array.init n (fun i -> Gp.Chart.createPlot $"./output/chart-{i:d2}.svg" lines i)
 
 runSeq gnuplotExePath542 plots
 runPar gnuplotExePath542 plots
