@@ -33,7 +33,7 @@ let runSeq gnuplotExePath plots =
 
     sw.Stop()
     printfn ""
-    printfn "Number of plots created: %i" n
+    printfn "Number of plots created: %i" (Array.length plots)
     printfn "Elapsed time in seconds: %f" sw.Elapsed.TotalSeconds
 
 let runPar gnuplotExePath plots =
@@ -52,7 +52,7 @@ let runPar gnuplotExePath plots =
 
     sw.Stop()
     printfn ""
-    printfn "Number of plots created: %i" n
+    printfn "Number of plots created: %i" (Array.length plots)
     printfn "Elapsed time in seconds: %f" sw.Elapsed.TotalSeconds
 
 //-------------------------------------------------------------------------------------------------

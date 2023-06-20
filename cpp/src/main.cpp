@@ -44,7 +44,7 @@ void run_seq(const std::string& gnuplot_exe_path, const std::vector<std::string>
     auto time_final = std::chrono::high_resolution_clock::now();
     auto time_total = std::chrono::duration<double>(time_final - time_start);
     std::cout << std::endl;
-    std::cout << "Number of plots created: " << n << std::endl;
+    std::cout << "Number of plots created: " << plots.size() << std::endl;
     std::cout << "Elapsed time in seconds: " << time_total.count() << std::endl;
 }
 
@@ -67,7 +67,7 @@ void run_par(const std::string& gnuplot_exe_path, const std::vector<std::string>
     auto time_final = std::chrono::high_resolution_clock::now();
     auto time_total = std::chrono::duration<double>(time_final - time_start);
     std::cout << std::endl;
-    std::cout << "Number of plots created: " << n << std::endl;
+    std::cout << "Number of plots created: " << plots.size() << std::endl;
     std::cout << "Elapsed time in seconds: " << time_total.count() << std::endl;
 }
 

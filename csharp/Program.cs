@@ -36,7 +36,7 @@ void RunSeq(string gnuplotExePath, string[] plots)
 
     sw.Stop();
     Console.WriteLine("");
-    Console.WriteLine("Number of plots created: {0}", n);
+    Console.WriteLine("Number of plots created: {0}", plots.Length);
     Console.WriteLine("Elapsed time in seconds: {0}", sw.Elapsed.TotalSeconds);
 }
 
@@ -58,7 +58,7 @@ void RunPar(string gnuplotExePath, string[] plots)
 
     sw.Stop();
     Console.WriteLine("");
-    Console.WriteLine("Number of plots created: {0}", n);
+    Console.WriteLine("Number of plots created: {0}", plots.Length);
     Console.WriteLine("Elapsed time in seconds: {0}", sw.Elapsed.TotalSeconds);
 }
 
