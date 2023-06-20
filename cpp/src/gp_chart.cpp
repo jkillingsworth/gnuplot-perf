@@ -1,9 +1,8 @@
+#include "gp_chart.h"
+
 #include <filesystem>
 #include <format>
 #include <functional>
-#include <numeric>
-#include <string>
-#include <vector>
 
 //-------------------------------------------------------------------------------------------------
 
