@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 //-------------------------------------------------------------------------------------------------
@@ -14,16 +13,9 @@ const string gnuplotExePath546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
 void Render(string gnuplotExePath, string plot)
 {
-    using var proc = new Process();
-    proc.StartInfo.FileName = gnuplotExePath;
-    proc.StartInfo.UseShellExecute = false;
-    proc.StartInfo.RedirectStandardInput = true;
-    proc.StartInfo.StandardInputEncoding = new UTF8Encoding();
-    proc.Start();
-    proc.StandardInput.Write(plot);
-    proc.StandardInput.Flush();
-    proc.WaitForExit();
-    proc.Close();
+    using var proc = new Proc(gnuplotExePath);
+    proc.Write(plot);
+    proc.ExitWait();
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -38,7 +38,10 @@ $(BIN):
 $(OBJ)/chart.o: chart.cpp chart.h
 	$(BUILDOBJ)
 
-$(OBJ)/main.o: main.cpp chart.h
+$(OBJ)/proc.o: proc.cpp proc.h
+	$(BUILDOBJ)
+
+$(OBJ)/main.o: main.cpp chart.h proc.h
 	$(BUILDOBJ)
 
 $(EXE): $(OBJFILES) | $(BIN)

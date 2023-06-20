@@ -2,7 +2,6 @@
 
 open System.IO
 open System.Diagnostics
-open System.Text
 
 //-------------------------------------------------------------------------------------------------
 
@@ -14,16 +13,9 @@ let gnuplotExePath546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
 let render gnuplotExePath plot =
 
-    use proc = new Process()
-    proc.StartInfo.FileName <- gnuplotExePath
-    proc.StartInfo.UseShellExecute <- false
-    proc.StartInfo.RedirectStandardInput <- true
-    proc.StartInfo.StandardInputEncoding <- new UTF8Encoding()
-    proc.Start() |> ignore
-    proc.StandardInput.Write(plot : string)
-    proc.StandardInput.Flush()
-    proc.WaitForExit()
-    proc.Close()
+    use proc = new Proc(gnuplotExePath)
+    proc.Write(plot)
+    proc.ExitAndWait()
 
 //-------------------------------------------------------------------------------------------------
 

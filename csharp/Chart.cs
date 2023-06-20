@@ -59,8 +59,6 @@ plot $data0 using 1:2:3:4:5 with financebars title sprintf('Chart %02i', index),
      $data1 using 1:2 with lines notitle,\
      $data1 using 1:3 with lines notitle,\
      $data1 using 1:4 with lines notitle
-
-exit
 ";
 
     public static string CreatePlot(string outputPath, string[] lines, int index)
