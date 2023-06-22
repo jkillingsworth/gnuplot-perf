@@ -11,7 +11,17 @@ let gnuplotExePath546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
 //-------------------------------------------------------------------------------------------------
 
-let runSeq gnuplotExePath plots =
+let runSeqSingularProc gnuplotExePath plots =
+
+    use proc = new Gp.Proc(gnuplotExePath)
+
+    for plot in plots do
+        printf "."
+        proc.Write(plot)
+
+    proc.ExitAndWait()
+
+let runSeqMultipleProc gnuplotExePath plots =
 
     for plot in plots do
         printf "."
@@ -19,7 +29,7 @@ let runSeq gnuplotExePath plots =
         proc.Write(plot)
         proc.ExitAndWait()
 
-let runPar gnuplotExePath plots =
+let runParMultipleProc gnuplotExePath plots =
 
     let action plot =
         printf "."
@@ -52,7 +62,9 @@ Directory.CreateDirectory("./output/") |> ignore
 let lines = File.ReadAllLines("./data.csv")
 let plots = Array.init n (fun i -> Gp.Chart.createPlot $"./output/chart-{i:d2}.svg" lines i)
 
-execute gnuplotExePath542 plots runSeq "seq"
-execute gnuplotExePath542 plots runPar "par"
-execute gnuplotExePath546 plots runSeq "seq"
-execute gnuplotExePath546 plots runPar "par"
+execute gnuplotExePath542 plots runSeqSingularProc "seq-singular-proc"
+execute gnuplotExePath546 plots runSeqSingularProc "seq-singular-proc"
+execute gnuplotExePath542 plots runSeqMultipleProc "seq-multiple-proc"
+execute gnuplotExePath546 plots runSeqMultipleProc "seq-multiple-proc"
+execute gnuplotExePath542 plots runParMultipleProc "par-multiple-proc"
+execute gnuplotExePath546 plots runParMultipleProc "par-multiple-proc"

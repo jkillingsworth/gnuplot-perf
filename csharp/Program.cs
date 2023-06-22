@@ -11,7 +11,20 @@ const string gnuplotExePath546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
 //-------------------------------------------------------------------------------------------------
 
-void RunSeq(string gnuplotExePath, string[] plots)
+void RunSeqSingularProc(string gnuplotExePath, string[] plots)
+{
+    using var proc = new Gp.Proc(gnuplotExePath);
+
+    foreach (var plot in plots)
+    {
+        Console.Write(".");
+        proc.Write(plot);
+    }
+
+    proc.ExitWait();
+}
+
+void RunSeqMultipleProc(string gnuplotExePath, string[] plots)
 {
     foreach (var plot in plots)
     {
@@ -22,7 +35,7 @@ void RunSeq(string gnuplotExePath, string[] plots)
     }
 }
 
-void RunPar(string gnuplotExePath, string[] plots)
+void RunParMultipleProc(string gnuplotExePath, string[] plots)
 {
     void Action(string plot)
     {
@@ -64,7 +77,9 @@ for (var i = 0; i < n; i++)
     plots[i] = Gp.Chart.CreatePlot($"./output/chart-{i:d2}.svg", lines, i);
 }
 
-Execute(gnuplotExePath542, plots, RunSeq, "seq");
-Execute(gnuplotExePath542, plots, RunPar, "par");
-Execute(gnuplotExePath546, plots, RunSeq, "seq");
-Execute(gnuplotExePath546, plots, RunPar, "par");
+Execute(gnuplotExePath542, plots, RunSeqSingularProc, "seq-singular-proc");
+Execute(gnuplotExePath546, plots, RunSeqSingularProc, "seq-singular-proc");
+Execute(gnuplotExePath542, plots, RunSeqMultipleProc, "seq-multiple-proc");
+Execute(gnuplotExePath546, plots, RunSeqMultipleProc, "seq-multiple-proc");
+Execute(gnuplotExePath542, plots, RunParMultipleProc, "par-multiple-proc");
+Execute(gnuplotExePath546, plots, RunParMultipleProc, "par-multiple-proc");

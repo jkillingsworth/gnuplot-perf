@@ -19,7 +19,20 @@ constexpr auto gnuplot_exe_path_546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
 //-------------------------------------------------------------------------------------------------
 
-void run_seq(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots)
+void run_seq_singular_proc(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots)
+{
+    auto proc = gp::proc(gnuplot_exe_path);
+
+    for (const auto& plot : plots)
+    {
+        std::cout << ".";
+        proc.write(plot);
+    }
+
+    proc.exit_wait();
+}
+
+void run_seq_multiple_proc(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots)
 {
     for (const auto& plot : plots)
     {
@@ -30,7 +43,7 @@ void run_seq(const std::string& gnuplot_exe_path, const std::vector<std::string>
     }
 }
 
-void run_par(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots)
+void run_par_multiple_proc(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots)
 {
     auto action = [&](const auto& plot) -> void
     {
@@ -84,10 +97,12 @@ int main()
         plots.push_back(plot);
     }
 
-    execute(gnuplot_exe_path_542, plots, run_seq, "seq");
-    execute(gnuplot_exe_path_542, plots, run_par, "par");
-    execute(gnuplot_exe_path_546, plots, run_seq, "seq");
-    execute(gnuplot_exe_path_546, plots, run_par, "par");
+    execute(gnuplot_exe_path_542, plots, run_seq_singular_proc, "seq-singular-proc");
+    execute(gnuplot_exe_path_546, plots, run_seq_singular_proc, "seq-singular-proc");
+    execute(gnuplot_exe_path_542, plots, run_seq_multiple_proc, "seq-multiple-proc");
+    execute(gnuplot_exe_path_546, plots, run_seq_multiple_proc, "seq-multiple-proc");
+    execute(gnuplot_exe_path_542, plots, run_par_multiple_proc, "par-multiple-proc");
+    execute(gnuplot_exe_path_546, plots, run_par_multiple_proc, "par-multiple-proc");
 
     return 0;
 }
