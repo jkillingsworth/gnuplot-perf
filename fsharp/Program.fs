@@ -11,25 +11,21 @@ let gnuplotExePath546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
 //-------------------------------------------------------------------------------------------------
 
-let render gnuplotExePath plot =
-
-    use proc = new Gp.Proc(gnuplotExePath)
-    proc.Write(plot)
-    proc.ExitAndWait()
-
-//-------------------------------------------------------------------------------------------------
-
 let runSeq gnuplotExePath plots =
 
     for plot in plots do
         printf "."
-        render gnuplotExePath plot
+        use proc = new Gp.Proc(gnuplotExePath)
+        proc.Write(plot)
+        proc.ExitAndWait()
 
 let runPar gnuplotExePath plots =
 
     let action plot =
         printf "."
-        render gnuplotExePath plot
+        use proc = new Gp.Proc(gnuplotExePath)
+        proc.Write(plot)
+        proc.ExitAndWait()
 
     Array.Parallel.iter action plots
 

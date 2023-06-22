@@ -19,21 +19,14 @@ constexpr auto gnuplot_exe_path_546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
 //-------------------------------------------------------------------------------------------------
 
-void render(const std::string& gnuplot_exe_path, const std::string& plot)
-{
-    auto proc = gp::proc(gnuplot_exe_path);
-    proc.write(plot);
-    proc.exit_wait();
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void run_seq(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots)
 {
     for (const auto& plot : plots)
     {
         std::cout << ".";
-        render(gnuplot_exe_path, plot);
+        auto proc = gp::proc(gnuplot_exe_path);
+        proc.write(plot);
+        proc.exit_wait();
     }
 }
 
@@ -42,7 +35,9 @@ void run_par(const std::string& gnuplot_exe_path, const std::vector<std::string>
     auto action = [&](const auto& plot) -> void
     {
         std::cout << ".";
-        render(gnuplot_exe_path, plot);
+        auto proc = gp::proc(gnuplot_exe_path);
+        proc.write(plot);
+        proc.exit_wait();
     };
 
     std::for_each(std::execution::par, std::begin(plots), std::end(plots), action);

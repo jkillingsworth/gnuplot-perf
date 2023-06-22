@@ -11,21 +11,14 @@ const string gnuplotExePath546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
 //-------------------------------------------------------------------------------------------------
 
-void Render(string gnuplotExePath, string plot)
-{
-    using var proc = new Gp.Proc(gnuplotExePath);
-    proc.Write(plot);
-    proc.ExitWait();
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void RunSeq(string gnuplotExePath, string[] plots)
 {
     foreach (var plot in plots)
     {
         Console.Write(".");
-        Render(gnuplotExePath, plot);
+        using var proc = new Gp.Proc(gnuplotExePath);
+        proc.Write(plot);
+        proc.ExitWait();
     }
 }
 
@@ -34,7 +27,9 @@ void RunPar(string gnuplotExePath, string[] plots)
     void Action(string plot)
     {
         Console.Write(".");
-        Render(gnuplotExePath, plot);
+        using var proc = new Gp.Proc(gnuplotExePath);
+        proc.Write(plot);
+        proc.ExitWait();
     }
 
     Parallel.ForEach(plots, Action);
