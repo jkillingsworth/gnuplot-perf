@@ -64,7 +64,7 @@ plot $data0 using 1:2:3:4:5 with financebars title sprintf('Chart %02i', index),
      $data1 using 1:4 with lines notitle
 )";
 
-    std::string map_signal(const std::string& line, int i)
+    static std::string map_signal(const std::string& line, int i)
     {
         std::vector<std::string> items;
         std::stringstream stream(line);
@@ -77,7 +77,7 @@ plot $data0 using 1:2:3:4:5 with financebars title sprintf('Chart %02i', index),
         return std::format("{0} {1} {2} {3} {4}", i, a, b, c, d);
     }
 
-    std::string map_metric(const std::string& line, int i)
+    static std::string map_metric(const std::string& line, int i)
     {
         std::vector<std::string> items;
         std::stringstream stream(line);
@@ -89,7 +89,7 @@ plot $data0 using 1:2:3:4:5 with financebars title sprintf('Chart %02i', index),
         return std::format("{0} {1} {2} {3}", i, e, f, g);
     }
 
-    std::string reduce(const std::vector<std::string>& lines, const std::function<std::string(const std::string&, int)>& map_func)
+    static std::string reduce(const std::vector<std::string>& lines, const std::function<std::string(const std::string&, int)>& map_func)
     {
         std::string s;
 

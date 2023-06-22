@@ -5,7 +5,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-void handle_error(const auto)
+static void handle_error(const auto)
 {
     DWORD dwLastErrorCode = GetLastError();
     LPSTR lpBufferMessage = NULL;
