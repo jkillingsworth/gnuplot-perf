@@ -103,13 +103,13 @@ plot $data0 using 1:2:3:4:5 with financebars title sprintf('Chart %02i', index),
         return s;
     }
 
-    std::string create_plot(const std::string& outputPath, const std::vector<std::string>& lines, int index)
+    std::string create_plot(const std::string& output_path, const std::vector<std::string>& lines, int index)
     {
         auto data0 = reduce(lines, map_signal);
         auto data1 = reduce(lines, map_metric);
         auto count = lines.size();
 
-        auto path = std::filesystem::absolute(outputPath).string();
+        auto path = std::filesystem::absolute(output_path).string();
         auto args = std::make_format_args(path, data0, data1, count, index);
         auto plot = std::vformat(plot_template, args);
 
