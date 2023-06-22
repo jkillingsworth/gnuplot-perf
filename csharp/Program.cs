@@ -22,32 +22,15 @@ void Render(string gnuplotExePath, string plot)
 
 void RunSeq(string gnuplotExePath, string[] plots)
 {
-    Console.WriteLine("");
-    Console.WriteLine("Gnuplot executable path: {0}", gnuplotExePath);
-    Console.WriteLine("Execution mode for test: sequential");
-    Console.Write("Running");
-    var sw = Stopwatch.StartNew();
-
     foreach (var plot in plots)
     {
         Console.Write(".");
         Render(gnuplotExePath, plot);
     }
-
-    sw.Stop();
-    Console.WriteLine("");
-    Console.WriteLine("Number of plots created: {0}", plots.Length);
-    Console.WriteLine("Elapsed time in seconds: {0}", sw.Elapsed.TotalSeconds);
 }
 
 void RunPar(string gnuplotExePath, string[] plots)
 {
-    Console.WriteLine("");
-    Console.WriteLine("Gnuplot executable path: {0}", gnuplotExePath);
-    Console.WriteLine("Execution mode for test: parallel");
-    Console.Write("Running");
-    var sw = Stopwatch.StartNew();
-
     void Action(string plot)
     {
         Console.Write(".");
@@ -55,6 +38,19 @@ void RunPar(string gnuplotExePath, string[] plots)
     }
 
     Parallel.ForEach(plots, Action);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void Execute(string gnuplotExePath, string[] plots, Action<string, string[]> run, string mode)
+{
+    Console.WriteLine("");
+    Console.WriteLine("Gnuplot executable path: {0}", gnuplotExePath);
+    Console.WriteLine("Execution mode for test: {0}", mode);
+    Console.Write("Running");
+    var sw = Stopwatch.StartNew();
+
+    run(gnuplotExePath, plots);
 
     sw.Stop();
     Console.WriteLine("");
@@ -73,7 +69,7 @@ for (var i = 0; i < n; i++)
     plots[i] = Gp.Chart.CreatePlot($"./output/chart-{i:d2}.svg", lines, i);
 }
 
-RunSeq(gnuplotExePath542, plots);
-RunPar(gnuplotExePath542, plots);
-RunSeq(gnuplotExePath546, plots);
-RunPar(gnuplotExePath546, plots);
+Execute(gnuplotExePath542, plots, RunSeq, "seq");
+Execute(gnuplotExePath542, plots, RunPar, "par");
+Execute(gnuplotExePath546, plots, RunSeq, "seq");
+Execute(gnuplotExePath546, plots, RunPar, "par");

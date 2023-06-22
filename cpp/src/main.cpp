@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <format>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -29,33 +30,15 @@ void render(const std::string& gnuplot_exe_path, const std::string& plot)
 
 void run_seq(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots)
 {
-    std::cout << std::endl;
-    std::cout << "Gnuplot executable path: " << gnuplot_exe_path << std::endl;
-    std::cout << "Execution mode for test: sequential" << std::endl;
-    std::cout << "Running";
-    auto time_start = std::chrono::high_resolution_clock::now();
-
     for (const auto& plot : plots)
     {
         std::cout << ".";
         render(gnuplot_exe_path, plot);
     }
-
-    auto time_final = std::chrono::high_resolution_clock::now();
-    auto time_total = std::chrono::duration<double>(time_final - time_start);
-    std::cout << std::endl;
-    std::cout << "Number of plots created: " << plots.size() << std::endl;
-    std::cout << "Elapsed time in seconds: " << time_total.count() << std::endl;
 }
 
 void run_par(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots)
 {
-    std::cout << std::endl;
-    std::cout << "Gnuplot executable path: " << gnuplot_exe_path << std::endl;
-    std::cout << "Execution mode for test: parallel" << std::endl;
-    std::cout << "Running";
-    auto time_start = std::chrono::high_resolution_clock::now();
-
     auto action = [&](const auto& plot) -> void
     {
         std::cout << ".";
@@ -63,6 +46,19 @@ void run_par(const std::string& gnuplot_exe_path, const std::vector<std::string>
     };
 
     std::for_each(std::execution::par, std::begin(plots), std::end(plots), action);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void execute(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots, const std::function<void(const std::string&, const std::vector<std::string>&)>& run, const std::string& mode)
+{
+    std::cout << std::endl;
+    std::cout << "Gnuplot executable path: " << gnuplot_exe_path << std::endl;
+    std::cout << "Execution mode for test: " << mode << std::endl;
+    std::cout << "Running";
+    auto time_start = std::chrono::high_resolution_clock::now();
+
+    run(gnuplot_exe_path, plots);
 
     auto time_final = std::chrono::high_resolution_clock::now();
     auto time_total = std::chrono::duration<double>(time_final - time_start);
@@ -93,10 +89,10 @@ int main()
         plots.push_back(plot);
     }
 
-    run_seq(gnuplot_exe_path_542, plots);
-    run_par(gnuplot_exe_path_542, plots);
-    run_seq(gnuplot_exe_path_546, plots);
-    run_par(gnuplot_exe_path_546, plots);
+    execute(gnuplot_exe_path_542, plots, run_seq, "seq");
+    execute(gnuplot_exe_path_542, plots, run_par, "par");
+    execute(gnuplot_exe_path_546, plots, run_seq, "seq");
+    execute(gnuplot_exe_path_546, plots, run_par, "par");
 
     return 0;
 }

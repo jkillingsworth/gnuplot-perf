@@ -21,34 +21,29 @@ let render gnuplotExePath plot =
 
 let runSeq gnuplotExePath plots =
 
-    printfn ""
-    printfn "Gnuplot executable path: %s" gnuplotExePath
-    printfn "Execution mode for test: sequential"
-    printf "Running"
-    let sw = Stopwatch.StartNew()
-
     for plot in plots do
         printf "."
         render gnuplotExePath plot
 
-    sw.Stop()
-    printfn ""
-    printfn "Number of plots created: %i" (Array.length plots)
-    printfn "Elapsed time in seconds: %f" sw.Elapsed.TotalSeconds
-
 let runPar gnuplotExePath plots =
-
-    printfn ""
-    printfn "Gnuplot executable path: %s" gnuplotExePath
-    printfn "Execution mode for test: parallel"
-    printf "Running"
-    let sw = Stopwatch.StartNew()
 
     let action plot =
         printf "."
         render gnuplotExePath plot
 
     Array.Parallel.iter action plots
+
+//-------------------------------------------------------------------------------------------------
+
+let execute gnuplotExePath plots run mode =
+
+    printfn ""
+    printfn "Gnuplot executable path: %s" gnuplotExePath
+    printfn "Execution mode for test: %s" mode
+    printf "Running"
+    let sw = Stopwatch.StartNew()
+
+    run gnuplotExePath plots
 
     sw.Stop()
     printfn ""
@@ -61,7 +56,7 @@ Directory.CreateDirectory("./output/") |> ignore
 let lines = File.ReadAllLines("./data.csv")
 let plots = Array.init n (fun i -> Gp.Chart.createPlot $"./output/chart-{i:d2}.svg" lines i)
 
-runSeq gnuplotExePath542 plots
-runPar gnuplotExePath542 plots
-runSeq gnuplotExePath546 plots
-runPar gnuplotExePath546 plots
+execute gnuplotExePath542 plots runSeq "seq"
+execute gnuplotExePath542 plots runPar "par"
+execute gnuplotExePath546 plots runSeq "seq"
+execute gnuplotExePath546 plots runPar "par"
