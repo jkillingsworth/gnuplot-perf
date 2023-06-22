@@ -58,15 +58,21 @@ void run_par_multiple_proc(const std::string& gnuplot_exe_path, const std::vecto
 
 //-------------------------------------------------------------------------------------------------
 
-void execute(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots, const std::function<void(const std::string&, const std::vector<std::string>&)>& run, const std::string& mode)
+struct run_args final
+{
+    const std::function<void(const std::string&, const std::vector<std::string>&)>& run;
+    const std::string& mode;
+};
+
+void execute(const std::string& gnuplot_exe_path, const std::vector<std::string>& plots, run_args args)
 {
     std::cout << std::endl;
     std::cout << "Gnuplot executable path: " << gnuplot_exe_path << std::endl;
-    std::cout << "Execution mode for test: " << mode << std::endl;
+    std::cout << "Execution mode for test: " << args.mode << std::endl;
     std::cout << "Running";
     auto time_start = std::chrono::high_resolution_clock::now();
 
-    run(gnuplot_exe_path, plots);
+    args.run(gnuplot_exe_path, plots);
 
     auto time_final = std::chrono::high_resolution_clock::now();
     auto time_total = std::chrono::duration<double>(time_final - time_start);
@@ -97,12 +103,12 @@ int main()
         plots.push_back(plot);
     }
 
-    execute(gnuplot_exe_path_542, plots, run_seq_singular_proc, "seq-singular-proc");
-    execute(gnuplot_exe_path_546, plots, run_seq_singular_proc, "seq-singular-proc");
-    execute(gnuplot_exe_path_542, plots, run_seq_multiple_proc, "seq-multiple-proc");
-    execute(gnuplot_exe_path_546, plots, run_seq_multiple_proc, "seq-multiple-proc");
-    execute(gnuplot_exe_path_542, plots, run_par_multiple_proc, "par-multiple-proc");
-    execute(gnuplot_exe_path_546, plots, run_par_multiple_proc, "par-multiple-proc");
+    execute(gnuplot_exe_path_542, plots, { run_seq_singular_proc, "seq-singular-proc" });
+    execute(gnuplot_exe_path_546, plots, { run_seq_singular_proc, "seq-singular-proc" });
+    execute(gnuplot_exe_path_542, plots, { run_seq_multiple_proc, "seq-multiple-proc" });
+    execute(gnuplot_exe_path_546, plots, { run_seq_multiple_proc, "seq-multiple-proc" });
+    execute(gnuplot_exe_path_542, plots, { run_par_multiple_proc, "par-multiple-proc" });
+    execute(gnuplot_exe_path_546, plots, { run_par_multiple_proc, "par-multiple-proc" });
 
     return 0;
 }
