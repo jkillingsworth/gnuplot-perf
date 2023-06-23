@@ -5,15 +5,10 @@
 
 //-------------------------------------------------------------------------------------------------
 
-static void handle_error(const auto)
+static void report_error()
 {
     DWORD dwLastErrorCode = GetLastError();
     LPSTR lpBufferMessage = NULL;
-
-    if (dwLastErrorCode == ERROR_SUCCESS)
-    {
-        return;
-    }
 
     FormatMessageA(
         FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -33,6 +28,36 @@ static void handle_error(const auto)
     std::exit(1);
 }
 
+static void handle_bool(BOOL result)
+{
+    if (result == FALSE)
+    {
+        report_error();
+    }
+}
+
+static void handle_wait(DWORD result)
+{
+    if (result == WAIT_ABANDONED)
+    {
+        std::cerr << std::endl;
+        std::cerr << std::format("UNEXPECTED 0x{0:08x}: {1}", result, "WAIT_ABANDONED");
+        std::cerr << std::endl;
+    }
+
+    if (result == WAIT_TIMEOUT)
+    {
+        std::cerr << std::endl;
+        std::cerr << std::format("UNEXPECTED 0x{0:08x}: {1}", result, "WAIT_TIMEOUT");
+        std::cerr << std::endl;
+    }
+
+    if (result == WAIT_FAILED)
+    {
+        report_error();
+    }
+}
+
 //-------------------------------------------------------------------------------------------------
 
 gp::proc::proc(const std::string& gnuplot_exe_path)
@@ -42,14 +67,14 @@ gp::proc::proc(const std::string& gnuplot_exe_path)
     securityAttributes.bInheritHandle = TRUE;
     securityAttributes.lpSecurityDescriptor = NULL;
 
-    handle_error(CreatePipe(&hPipeStdInR, &hPipeStdInW, &securityAttributes, 0));
+    handle_bool(CreatePipe(&hPipeStdInR, &hPipeStdInW, &securityAttributes, 0));
 
     STARTUPINFOA startupInfo = {};
     startupInfo.cb = sizeof(STARTUPINFOA);
     startupInfo.dwFlags = STARTF_USESTDHANDLES;
     startupInfo.hStdInput = hPipeStdInR;
 
-    handle_error(CreateProcessA(
+    handle_bool(CreateProcessA(
         gnuplot_exe_path.c_str(),
         NULL,
         NULL,
@@ -65,20 +90,20 @@ gp::proc::proc(const std::string& gnuplot_exe_path)
 
 void gp::proc::write(const std::string& plot)
 {
-    handle_error(WriteFile(hPipeStdInW, plot.c_str(), (DWORD)plot.length(), NULL, NULL));
-    handle_error(FlushFileBuffers(hPipeStdInW));
+    handle_bool(WriteFile(hPipeStdInW, plot.c_str(), (DWORD)plot.length(), NULL, NULL));
+    handle_bool(FlushFileBuffers(hPipeStdInW));
 }
 
 void gp::proc::exit_wait()
 {
     write("exit\n");
-    handle_error(WaitForSingleObject(processInformation.hProcess, INFINITE));
+    handle_wait(WaitForSingleObject(processInformation.hProcess, INFINITE));
 }
 
 gp::proc::~proc()
 {
-    handle_error(CloseHandle(processInformation.hProcess));
-    handle_error(CloseHandle(processInformation.hThread));
-    handle_error(CloseHandle(hPipeStdInR));
-    handle_error(CloseHandle(hPipeStdInW));
+    handle_bool(CloseHandle(processInformation.hProcess));
+    handle_bool(CloseHandle(processInformation.hThread));
+    handle_bool(CloseHandle(hPipeStdInR));
+    handle_bool(CloseHandle(hPipeStdInW));
 }
