@@ -2,29 +2,91 @@
 
 #include <format>
 #include <iostream>
+#include <vector>
+
+//-------------------------------------------------------------------------------------------------
+
+static std::wstring convert_string_to_wstring(const std::string& s)
+{
+    UINT codePage = CP_UTF8;
+    DWORD dwFlags = MB_ERR_INVALID_CHARS;
+
+    LPCCH lpMultiByteStr = s.c_str();
+    int cbMultiByte = (int)s.size();
+    int cchWideChar = MultiByteToWideChar(codePage, dwFlags, lpMultiByteStr, cbMultiByte, NULL, 0);
+    if (cchWideChar == 0)
+    {
+        std::cerr << std::endl;
+        std::cerr << "STRING CONVERSION ERROR";
+        std::exit(1);
+    }
+
+    std::vector<wchar_t> buffer(cchWideChar);
+
+    LPWSTR lpWideCharStr = buffer.data();
+    int returnValue = MultiByteToWideChar(codePage, dwFlags, lpMultiByteStr, cbMultiByte, lpWideCharStr, cchWideChar);
+    if (returnValue == 0)
+    {
+        std::cerr << std::endl;
+        std::cerr << "STRING CONVERSION ERROR";
+        std::exit(1);
+    }
+
+    return std::wstring(buffer.begin(), buffer.end());
+}
+
+static std::string convert_wstring_to_string(const std::wstring& w)
+{
+    UINT codePage = CP_UTF8;
+    DWORD dwFlags = WC_ERR_INVALID_CHARS;
+
+    LPCWCH lpWideCharStr = w.c_str();
+    int cchWideChar = (int)w.size();
+    int cbMultiByte = WideCharToMultiByte(codePage, dwFlags, lpWideCharStr, cchWideChar, NULL, 0, NULL, NULL);
+    if (cbMultiByte == 0)
+    {
+        std::cerr << std::endl;
+        std::cerr << "STRING CONVERSION ERROR";
+        std::exit(1);
+    }
+
+    std::vector<char> buffer(cbMultiByte);
+
+    LPSTR lpMultiByteStr = buffer.data();
+    int returnValue = WideCharToMultiByte(codePage, dwFlags, lpWideCharStr, cchWideChar, lpMultiByteStr, cbMultiByte, NULL, NULL);
+    if (returnValue == 0)
+    {
+        std::cerr << std::endl;
+        std::cerr << "STRING CONVERSION ERROR";
+        std::exit(1);
+    }
+
+    return std::string(buffer.begin(), buffer.end());
+}
 
 //-------------------------------------------------------------------------------------------------
 
 static void report_error()
 {
     DWORD dwLastErrorCode = GetLastError();
-    LPSTR lpBufferMessage = NULL;
+    LPWSTR lpBufferMessage = NULL;
 
-    FormatMessageA(
+    FormatMessageW(
         FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         dwLastErrorCode,
         LANG_USER_DEFAULT,
-        (LPSTR)&lpBufferMessage,
+        (LPWSTR)&lpBufferMessage,
         0,
         NULL
     );
 
-    std::cerr << std::endl;
-    std::cerr << std::format("ERROR 0x{0:08x}: {1}", dwLastErrorCode, lpBufferMessage);
+    auto message = convert_wstring_to_string(lpBufferMessage);
 
     LocalFree(lpBufferMessage);
 
+    std::cerr << std::endl;
+    std::cerr << std::format("ERROR 0x{0:08x}: {1}", dwLastErrorCode, message);
     std::exit(1);
 }
 
@@ -69,13 +131,13 @@ gp::proc::proc(const std::string& gnuplot_exe_path)
 
     handle_bool(CreatePipe(&hPipeStdInR, &hPipeStdInW, &securityAttributes, 0));
 
-    STARTUPINFOA startupInfo = {};
-    startupInfo.cb = sizeof(STARTUPINFOA);
+    STARTUPINFOW startupInfo = {};
+    startupInfo.cb = sizeof(STARTUPINFOW);
     startupInfo.dwFlags = STARTF_USESTDHANDLES;
     startupInfo.hStdInput = hPipeStdInR;
 
-    handle_bool(CreateProcessA(
-        gnuplot_exe_path.c_str(),
+    handle_bool(CreateProcessW(
+        convert_string_to_wstring(gnuplot_exe_path).c_str(),
         NULL,
         NULL,
         NULL,
