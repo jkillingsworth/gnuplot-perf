@@ -11,11 +11,10 @@ SRCFILES = $(filter %.cpp, $(wildcard $(SRC)/*))
 OBJFILES = $(patsubst $(SRC)/%, $(OBJ)/%.o, $(basename $(SRCFILES)))
 
 CPPFLAGS = -DUNICODE -D_UNICODE
-CPPLANGV = -std=c++20
-WARNINGS = -Wall -Wextra -Wpedantic -Wconversion
-BUILDOBJ = g++ $(CPPFLAGS) $(CPPLANGV) $(WARNINGS) -o $@ $< -c
-BUILDEXE = g++ $(CPPFLAGS) $(CPPLANGV) $(WARNINGS) -o $@ $^ -ltbb12
-BUILDHDR = g++ $(CPPFLAGS) $(CPPLANGV) $(WARNINGS) -o /dev/null $(HDRFILES)
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -Wconversion
+BUILDOBJ = $(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ $< -c
+BUILDEXE = $(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ $^ -ltbb12
+BUILDHDR = $(CXX) $(CXXFLAGS) $(CPPFLAGS) -o /dev/null $(HDRFILES)
 
 VPATH = $(SRC)
 
