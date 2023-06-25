@@ -71,7 +71,7 @@ static void report_error()
     DWORD dwLastErrorCode = GetLastError();
     LPWSTR lpBufferMessage = NULL;
 
-    FormatMessageW(
+    FormatMessage(
         FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         dwLastErrorCode,
@@ -131,12 +131,12 @@ gp::proc::proc(const std::string& gnuplot_exe_path)
 
     handle_bool(CreatePipe(&hPipeStdInR, &hPipeStdInW, &securityAttributes, 0));
 
-    STARTUPINFOW startupInfo = {};
-    startupInfo.cb = sizeof(STARTUPINFOW);
+    STARTUPINFO startupInfo = {};
+    startupInfo.cb = sizeof(STARTUPINFO);
     startupInfo.dwFlags = STARTF_USESTDHANDLES;
     startupInfo.hStdInput = hPipeStdInR;
 
-    handle_bool(CreateProcessW(
+    handle_bool(CreateProcess(
         convert_string_to_wstring(gnuplot_exe_path).c_str(),
         NULL,
         NULL,

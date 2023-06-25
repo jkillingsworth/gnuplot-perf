@@ -10,11 +10,12 @@ HDRFILES = $(wildcard $(SRC)/*.h)
 SRCFILES = $(filter %.cpp, $(wildcard $(SRC)/*))
 OBJFILES = $(patsubst $(SRC)/%, $(OBJ)/%.o, $(basename $(SRCFILES)))
 
+CPPFLAGS = -DUNICODE -D_UNICODE
 CPPLANGV = -std=c++20
 WARNINGS = -Wall -Wextra -Wpedantic -Wconversion
-BUILDOBJ = g++ $(CPPLANGV) $(WARNINGS) -o $@ $< -c
-BUILDEXE = g++ $(CPPLANGV) $(WARNINGS) -o $@ $^ -ltbb12
-BUILDHDR = g++ $(CPPLANGV) $(WARNINGS) -o /dev/null $(HDRFILES)
+BUILDOBJ = g++ $(CPPFLAGS) $(CPPLANGV) $(WARNINGS) -o $@ $< -c
+BUILDEXE = g++ $(CPPFLAGS) $(CPPLANGV) $(WARNINGS) -o $@ $^ -ltbb12
+BUILDHDR = g++ $(CPPFLAGS) $(CPPLANGV) $(WARNINGS) -o /dev/null $(HDRFILES)
 
 VPATH = $(SRC)
 
