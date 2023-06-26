@@ -6,6 +6,17 @@
 
 //-------------------------------------------------------------------------------------------------
 
+static void report_string_error()
+{
+    DWORD dwErrorCode = GetLastError();
+
+    std::cerr << std::endl;
+    std::cerr << std::format("ERROR CODE: 0x{0:08x}", dwErrorCode);
+    std::cerr << std::endl;
+
+    std::exit(1);
+}
+
 static std::wstring convert_string_to_wstring(const std::string& s)
 {
     UINT codePage = CP_UTF8;
@@ -16,9 +27,7 @@ static std::wstring convert_string_to_wstring(const std::string& s)
     int cchWideChar = MultiByteToWideChar(codePage, dwFlags, lpMultiByteStr, cbMultiByte, NULL, 0);
     if (cchWideChar == 0)
     {
-        std::cerr << std::endl;
-        std::cerr << "STRING CONVERSION ERROR";
-        std::exit(1);
+        report_string_error();
     }
 
     std::vector<wchar_t> buffer(cchWideChar);
@@ -27,9 +36,7 @@ static std::wstring convert_string_to_wstring(const std::string& s)
     int returnValue = MultiByteToWideChar(codePage, dwFlags, lpMultiByteStr, cbMultiByte, lpWideCharStr, cchWideChar);
     if (returnValue == 0)
     {
-        std::cerr << std::endl;
-        std::cerr << "STRING CONVERSION ERROR";
-        std::exit(1);
+        report_string_error();
     }
 
     return std::wstring(buffer.begin(), buffer.end());
@@ -45,9 +52,7 @@ static std::string convert_wstring_to_string(const std::wstring& w)
     int cbMultiByte = WideCharToMultiByte(codePage, dwFlags, lpWideCharStr, cchWideChar, NULL, 0, NULL, NULL);
     if (cbMultiByte == 0)
     {
-        std::cerr << std::endl;
-        std::cerr << "STRING CONVERSION ERROR";
-        std::exit(1);
+        report_string_error();
     }
 
     std::vector<char> buffer(cbMultiByte);
@@ -56,9 +61,7 @@ static std::string convert_wstring_to_string(const std::wstring& w)
     int returnValue = WideCharToMultiByte(codePage, dwFlags, lpWideCharStr, cchWideChar, lpMultiByteStr, cbMultiByte, NULL, NULL);
     if (returnValue == 0)
     {
-        std::cerr << std::endl;
-        std::cerr << "STRING CONVERSION ERROR";
-        std::exit(1);
+        report_string_error();
     }
 
     return std::string(buffer.begin(), buffer.end());
@@ -66,27 +69,30 @@ static std::string convert_wstring_to_string(const std::wstring& w)
 
 //-------------------------------------------------------------------------------------------------
 
-static void report_error()
+static void report_result_error()
 {
-    DWORD dwLastErrorCode = GetLastError();
-    LPWSTR lpBufferMessage = NULL;
+    DWORD dwErrorCode = GetLastError();
+
+    std::cerr << std::endl;
+    std::cerr << std::format("ERROR CODE: 0x{0:08x}", dwErrorCode);
+
+    LPWSTR lpErrorMessage = NULL;
 
     FormatMessage(
         FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
-        dwLastErrorCode,
+        dwErrorCode,
         LANG_USER_DEFAULT,
-        (LPWSTR)&lpBufferMessage,
+        (LPWSTR)&lpErrorMessage,
         0,
         NULL
     );
 
-    auto message = convert_wstring_to_string(lpBufferMessage);
-
-    LocalFree(lpBufferMessage);
-
     std::cerr << std::endl;
-    std::cerr << std::format("ERROR 0x{0:08x}: {1}", dwLastErrorCode, message);
+    std::cerr << std::format("ERROR MESSAGE: {0}", convert_wstring_to_string(lpErrorMessage));
+
+    LocalFree(lpErrorMessage);
+
     std::exit(1);
 }
 
@@ -94,29 +100,33 @@ static void handle_bool(BOOL result)
 {
     if (result == FALSE)
     {
-        report_error();
+        report_result_error();
     }
 }
 
 static void handle_wait(DWORD result)
 {
-    if (result == WAIT_ABANDONED)
-    {
-        std::cerr << std::endl;
-        std::cerr << std::format("UNEXPECTED 0x{0:08x}: {1}", result, "WAIT_ABANDONED");
-        std::cerr << std::endl;
-    }
-
-    if (result == WAIT_TIMEOUT)
-    {
-        std::cerr << std::endl;
-        std::cerr << std::format("UNEXPECTED 0x{0:08x}: {1}", result, "WAIT_TIMEOUT");
-        std::cerr << std::endl;
-    }
-
     if (result == WAIT_FAILED)
     {
-        report_error();
+        report_result_error();
+    }
+    else if (result == WAIT_ABANDONED)
+    {
+        std::cerr << std::endl;
+        std::cerr << std::format("UNEXPECTED: 0x{0:08x} {1}", result, "WAIT_ABANDONED");
+        std::cerr << std::endl;
+    }
+    else if (result == WAIT_TIMEOUT)
+    {
+        std::cerr << std::endl;
+        std::cerr << std::format("UNEXPECTED: 0x{0:08x} {1}", result, "WAIT_TIMEOUT");
+        std::cerr << std::endl;
+    }
+    else if (result != WAIT_OBJECT_0)
+    {
+        std::cerr << std::endl;
+        std::cerr << std::format("UNEXPECTED: 0x{0:08x}", result);
+        std::cerr << std::endl;
     }
 }
 
