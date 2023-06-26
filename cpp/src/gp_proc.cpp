@@ -22,19 +22,19 @@ static std::wstring convert_string_to_wstring(const std::string& s)
     UINT codePage = CP_UTF8;
     DWORD dwFlags = MB_ERR_INVALID_CHARS;
 
-    LPCCH lpMultiByteStr = s.c_str();
-    int cbMultiByte = (int)s.size();
-    int cchWideChar = MultiByteToWideChar(codePage, dwFlags, lpMultiByteStr, cbMultiByte, NULL, 0);
-    if (cchWideChar == 0)
+    LPCCH lpStrS = s.c_str();
+    int cbStrS = (int)s.size();
+    int ccStrW = MultiByteToWideChar(codePage, dwFlags, lpStrS, cbStrS, NULL, 0);
+    if (ccStrW == 0)
     {
         report_string_error();
     }
 
-    std::vector<wchar_t> buffer(cchWideChar);
+    std::vector<wchar_t> buffer(ccStrW);
 
-    LPWSTR lpWideCharStr = buffer.data();
-    int returnValue = MultiByteToWideChar(codePage, dwFlags, lpMultiByteStr, cbMultiByte, lpWideCharStr, cchWideChar);
-    if (returnValue == 0)
+    LPWSTR lpStrW = buffer.data();
+    int result = MultiByteToWideChar(codePage, dwFlags, lpStrS, cbStrS, lpStrW, ccStrW);
+    if (result == 0)
     {
         report_string_error();
     }
@@ -47,19 +47,19 @@ static std::string convert_wstring_to_string(const std::wstring& w)
     UINT codePage = CP_UTF8;
     DWORD dwFlags = WC_ERR_INVALID_CHARS;
 
-    LPCWCH lpWideCharStr = w.c_str();
-    int cchWideChar = (int)w.size();
-    int cbMultiByte = WideCharToMultiByte(codePage, dwFlags, lpWideCharStr, cchWideChar, NULL, 0, NULL, NULL);
-    if (cbMultiByte == 0)
+    LPCWCH lpStrW = w.c_str();
+    int ccStrW = (int)w.size();
+    int cbStrS = WideCharToMultiByte(codePage, dwFlags, lpStrW, ccStrW, NULL, 0, NULL, NULL);
+    if (cbStrS == 0)
     {
         report_string_error();
     }
 
-    std::vector<char> buffer(cbMultiByte);
+    std::vector<char> buffer(cbStrS);
 
-    LPSTR lpMultiByteStr = buffer.data();
-    int returnValue = WideCharToMultiByte(codePage, dwFlags, lpWideCharStr, cchWideChar, lpMultiByteStr, cbMultiByte, NULL, NULL);
-    if (returnValue == 0)
+    LPSTR lpStrS = buffer.data();
+    int result = WideCharToMultiByte(codePage, dwFlags, lpStrW, ccStrW, lpStrS, cbStrS, NULL, NULL);
+    if (result == 0)
     {
         report_string_error();
     }
