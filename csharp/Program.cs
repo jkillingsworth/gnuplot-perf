@@ -77,9 +77,15 @@ for (var i = 0; i < n; i++)
     plots[i] = Gp.Chart.CreatePlot($"./output/chart-{i:d2}.svg", lines, i);
 }
 
-Execute(gnuplotExePath542, plots, RunSeqSingularProc, "seq-singular-proc");
-Execute(gnuplotExePath546, plots, RunSeqSingularProc, "seq-singular-proc");
-Execute(gnuplotExePath542, plots, RunSeqMultipleProc, "seq-multiple-proc");
-Execute(gnuplotExePath546, plots, RunSeqMultipleProc, "seq-multiple-proc");
-Execute(gnuplotExePath542, plots, RunParMultipleProc, "par-multiple-proc");
-Execute(gnuplotExePath546, plots, RunParMultipleProc, "par-multiple-proc");
+var paths = new string[]
+{
+    gnuplotExePath542,
+    gnuplotExePath546
+};
+
+foreach (var gnuplotExePath in paths)
+{
+    Execute(gnuplotExePath, plots, RunSeqSingularProc, "seq-singular-proc");
+    Execute(gnuplotExePath, plots, RunSeqMultipleProc, "seq-multiple-proc");
+    Execute(gnuplotExePath, plots, RunParMultipleProc, "par-multiple-proc");
+}

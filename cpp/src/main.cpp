@@ -103,12 +103,18 @@ int main()
         plots.push_back(plot);
     }
 
-    execute(gnuplot_exe_path_542, plots, { run_seq_singular_proc, "seq-singular-proc" });
-    execute(gnuplot_exe_path_546, plots, { run_seq_singular_proc, "seq-singular-proc" });
-    execute(gnuplot_exe_path_542, plots, { run_seq_multiple_proc, "seq-multiple-proc" });
-    execute(gnuplot_exe_path_546, plots, { run_seq_multiple_proc, "seq-multiple-proc" });
-    execute(gnuplot_exe_path_542, plots, { run_par_multiple_proc, "par-multiple-proc" });
-    execute(gnuplot_exe_path_546, plots, { run_par_multiple_proc, "par-multiple-proc" });
+    auto paths =
+    {
+        gnuplot_exe_path_542,
+        gnuplot_exe_path_546
+    };
+
+    for (auto gnuplot_exe_path : paths)
+    {
+        execute(gnuplot_exe_path, plots, { run_seq_singular_proc, "seq-singular-proc" });
+        execute(gnuplot_exe_path, plots, { run_seq_multiple_proc, "seq-multiple-proc" });
+        execute(gnuplot_exe_path, plots, { run_par_multiple_proc, "par-multiple-proc" });
+    }
 
     return 0;
 }

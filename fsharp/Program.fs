@@ -62,9 +62,12 @@ Directory.CreateDirectory("./output/") |> ignore
 let lines = File.ReadAllLines("./data.csv")
 let plots = Array.init n (fun i -> Gp.Chart.createPlot $"./output/chart-{i:d2}.svg" lines i)
 
-execute gnuplotExePath542 plots runSeqSingularProc "seq-singular-proc"
-execute gnuplotExePath546 plots runSeqSingularProc "seq-singular-proc"
-execute gnuplotExePath542 plots runSeqMultipleProc "seq-multiple-proc"
-execute gnuplotExePath546 plots runSeqMultipleProc "seq-multiple-proc"
-execute gnuplotExePath542 plots runParMultipleProc "par-multiple-proc"
-execute gnuplotExePath546 plots runParMultipleProc "par-multiple-proc"
+let paths = [|
+    gnuplotExePath542
+    gnuplotExePath546
+|]
+
+for gnuplotExePath in paths do
+    execute gnuplotExePath plots runSeqSingularProc "seq-singular-proc"
+    execute gnuplotExePath plots runSeqMultipleProc "seq-multiple-proc"
+    execute gnuplotExePath plots runParMultipleProc "par-multiple-proc"
