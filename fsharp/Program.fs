@@ -11,7 +11,7 @@ let gnuplotExePath546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
 
 //-------------------------------------------------------------------------------------------------
 
-let runSeqSingularProc gnuplotExePath plots =
+let runSingularProcSeq gnuplotExePath plots =
 
     use proc = new Gp.Proc(gnuplotExePath)
 
@@ -21,7 +21,7 @@ let runSeqSingularProc gnuplotExePath plots =
 
     proc.ExitAndWait()
 
-let runSeqMultipleProc gnuplotExePath plots =
+let runMultipleProcSeq gnuplotExePath plots =
 
     for plot in plots do
         printf "."
@@ -29,7 +29,7 @@ let runSeqMultipleProc gnuplotExePath plots =
         proc.Write(plot)
         proc.ExitAndWait()
 
-let runParMultipleProc gnuplotExePath plots =
+let runMultipleProcPar gnuplotExePath plots =
 
     let action plot =
         printf "."
@@ -68,6 +68,6 @@ let paths = [|
 |]
 
 for gnuplotExePath in paths do
-    execute gnuplotExePath plots runSeqSingularProc "seq-singular-proc"
-    execute gnuplotExePath plots runSeqMultipleProc "seq-multiple-proc"
-    execute gnuplotExePath plots runParMultipleProc "par-multiple-proc"
+    execute gnuplotExePath plots runSingularProcSeq "singular-proc-seq"
+    execute gnuplotExePath plots runMultipleProcSeq "multiple-proc-seq"
+    execute gnuplotExePath plots runMultipleProcPar "multiple-proc-par"
