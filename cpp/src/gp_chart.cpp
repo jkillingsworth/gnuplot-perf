@@ -2,7 +2,8 @@
 
 #include <filesystem>
 #include <format>
-#include <functional>
+#include <numeric>
+#include <ranges>
 
 //-------------------------------------------------------------------------------------------------
 
@@ -89,24 +90,22 @@ plot $data0 using 1:2:3:4:5 with financebars title sprintf('Chart %02i', index),
         return std::format("{0} {1} {2} {3}", i, e, f, g);
     }
 
-    static std::string reduce(const std::vector<std::string>& lines, const std::function<std::string(const std::string&, int)>& map_func)
+    static std::string reduce_op(const std::string& x, const std::string& y)
     {
-        std::string s;
-
-        for (auto it = lines.begin(); it != lines.end(); it++)
-        {
-            int i = static_cast<int>(std::distance(lines.begin(), it));
-            if (i != 0) s.append("\n");
-            s.append(map_func(*it, i));
-        }
-
-        return s;
+        if (x.empty()) return y;
+        if (y.empty()) return x;
+        return x + "\n" + y;
     }
 
     std::string create_plot(const std::string& output_path, const std::vector<std::string>& lines, int index)
     {
-        auto data0 = reduce(lines, map_signal);
-        auto data1 = reduce(lines, map_metric);
+        auto init_val = std::string();
+        auto ix_start = std::views::iota(0).begin();
+        auto it_start = lines.begin();
+        auto it_final = lines.end();
+
+        auto data0 = std::inner_product(it_start, it_final, ix_start, init_val, reduce_op, map_signal);
+        auto data1 = std::inner_product(it_start, it_final, ix_start, init_val, reduce_op, map_metric);
         auto count = lines.size();
 
         auto path = std::filesystem::absolute(output_path).string();
