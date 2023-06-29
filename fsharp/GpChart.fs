@@ -61,22 +61,22 @@ plot $data0 using 1:2:3:4:5 with financebars title sprintf('Chart %02i', index),
      $data1 using 1:4 with lines notitle
 "
 
+let private mapSignal i (line : string) =
+    let items = line.Split(",")
+    let a = items.[0]
+    let b = items.[1]
+    let c = items.[2]
+    let d = items.[3]
+    sprintf "%O %O %O %O %O" i a b c d
+
+let private mapMetric i (line : string) =
+    let items = line.Split(",")
+    let e = items.[4]
+    let f = items.[5]
+    let g = items.[6]
+    sprintf "%O %O %O %O" i e f g
+
 let createPlot outputPath lines index =
-
-    let mapSignal i (line : string) =
-        let items = line.Split(",")
-        let a = items.[0]
-        let b = items.[1]
-        let c = items.[2]
-        let d = items.[3]
-        sprintf "%O %O %O %O %O" i a b c d
-
-    let mapMetric i (line : string) =
-        let items = line.Split(",")
-        let e = items.[4]
-        let f = items.[5]
-        let g = items.[6]
-        sprintf "%O %O %O %O" i e f g
 
     let data0 = lines |> Array.mapi mapSignal |> String.concat "\n"
     let data1 = lines |> Array.mapi mapMetric |> String.concat "\n"

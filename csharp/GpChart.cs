@@ -63,27 +63,27 @@ plot $data0 using 1:2:3:4:5 with financebars title sprintf('Chart %02i', index),
      $data1 using 1:4 with lines notitle
 ";
 
+    private static string MapSignal(string line, int i)
+    {
+        var items = line.Split(",");
+        var a = items[0];
+        var b = items[1];
+        var c = items[2];
+        var d = items[3];
+        return string.Format("{0} {1} {2} {3} {4}", i, a, b, c, d);
+    }
+
+    private static string MapMetric(string line, int i)
+    {
+        var items = line.Split(",");
+        var e = items[4];
+        var f = items[5];
+        var g = items[6];
+        return string.Format("{0} {1} {2} {3}", i, e, f, g);
+    }
+
     public static string CreatePlot(string outputPath, string[] lines, int index)
     {
-        string MapSignal(string line, int i)
-        {
-            var items = line.Split(",");
-            var a = items[0];
-            var b = items[1];
-            var c = items[2];
-            var d = items[3];
-            return string.Format("{0} {1} {2} {3} {4}", i, a, b, c, d);
-        }
-
-        string MapMetric(string line, int i)
-        {
-            var items = line.Split(",");
-            var e = items[4];
-            var f = items[5];
-            var g = items[6];
-            return string.Format("{0} {1} {2} {3}", i, e, f, g);
-        }
-
         var data0 = string.Join("\n", lines.Select(MapSignal));
         var data1 = string.Join("\n", lines.Select(MapMetric));
         var count = lines.Length;
