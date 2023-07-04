@@ -96,9 +96,25 @@ static void report_result_error()
     std::exit(1);
 }
 
+static void handle_hjob(HANDLE result)
+{
+    if (result == NULL)
+    {
+        report_result_error();
+    }
+}
+
 static void handle_bool(BOOL result)
 {
     if (result == FALSE)
+    {
+        report_result_error();
+    }
+}
+
+static void handle_fail(DWORD result)
+{
+    if (result == (DWORD)-1)
     {
         report_result_error();
     }
@@ -134,6 +150,14 @@ static void handle_wait(DWORD result)
 
 gp::proc::proc(const std::string& gnuplot_exe_path)
 {
+    HANDLE hJob = CreateJobObject(NULL, NULL);
+    handle_hjob(hJob);
+
+    JOBOBJECT_EXTENDED_LIMIT_INFORMATION jobInfo = {};
+    jobInfo.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+
+    handle_bool(SetInformationJobObject(hJob, JobObjectExtendedLimitInformation, &jobInfo, sizeof(jobInfo)));
+
     SECURITY_ATTRIBUTES securityAttributes = {};
     securityAttributes.nLength = sizeof(SECURITY_ATTRIBUTES);
     securityAttributes.bInheritHandle = TRUE;
@@ -152,12 +176,15 @@ gp::proc::proc(const std::string& gnuplot_exe_path)
         NULL,
         NULL,
         TRUE,
-        NORMAL_PRIORITY_CLASS,
+        CREATE_SUSPENDED,
         NULL,
         NULL,
         &startupInfo,
         &processInformation
     ));
+
+    handle_bool(AssignProcessToJobObject(hJob, processInformation.hProcess));
+    handle_fail(ResumeThread(processInformation.hThread));
 }
 
 void gp::proc::write(const std::string& plot)
