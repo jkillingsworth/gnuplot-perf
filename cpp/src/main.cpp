@@ -15,7 +15,7 @@
 
 constexpr auto n = 100;
 constexpr auto gnuplot_exe_path_542 = "C:\\gnuplot542\\bin\\gnuplot.exe";
-constexpr auto gnuplot_exe_path_546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
+constexpr auto gnuplot_exe_path_548 = "C:\\gnuplot548\\bin\\gnuplot.exe";
 
 //-------------------------------------------------------------------------------------------------
 
@@ -106,7 +106,7 @@ int main()
     auto paths =
     {
         gnuplot_exe_path_542,
-        gnuplot_exe_path_546
+        gnuplot_exe_path_548
     };
 
     for (auto gnuplot_exe_path : paths)

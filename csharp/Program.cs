@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 const int n = 100;
 const string gnuplotExePath542 = "C:\\gnuplot542\\bin\\gnuplot.exe";
-const string gnuplotExePath546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
+const string gnuplotExePath548 = "C:\\gnuplot548\\bin\\gnuplot.exe";
 
 //-------------------------------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ for (var i = 0; i < n; i++)
 var paths = new string[]
 {
     gnuplotExePath542,
-    gnuplotExePath546
+    gnuplotExePath548
 };
 
 foreach (var gnuplotExePath in paths)

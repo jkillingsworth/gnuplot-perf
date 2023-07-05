@@ -7,7 +7,7 @@ open System.Diagnostics
 
 let n = 100
 let gnuplotExePath542 = "C:\\gnuplot542\\bin\\gnuplot.exe";
-let gnuplotExePath546 = "C:\\gnuplot546\\bin\\gnuplot.exe";
+let gnuplotExePath548 = "C:\\gnuplot548\\bin\\gnuplot.exe";
 
 //-------------------------------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ let plots = Array.init n (fun i -> Gp.Chart.createPlot $"./output/chart-{i:d2}.s
 
 let paths = [|
     gnuplotExePath542
-    gnuplotExePath546
+    gnuplotExePath548
 |]
 
 for gnuplotExePath in paths do
