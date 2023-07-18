@@ -96,6 +96,14 @@ static void report_result_error()
     std::exit(1);
 }
 
+static void handle_hstd(HANDLE result)
+{
+    if (result == INVALID_HANDLE_VALUE)
+    {
+        report_result_error();
+    }
+}
+
 static void handle_hjob(HANDLE result)
 {
     if (result == NULL)
@@ -165,10 +173,18 @@ gp::proc::proc(const std::string& gnuplot_exe_path)
 
     handle_bool(CreatePipe(&hPipeStdInR, &hPipeStdInW, &securityAttributes, 0));
 
+    HANDLE hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+    handle_hstd(hStdOutput);
+
+    HANDLE hStdError = GetStdHandle(STD_ERROR_HANDLE);
+    handle_hstd(hStdError);
+
     STARTUPINFO startupInfo = {};
     startupInfo.cb = sizeof(STARTUPINFO);
     startupInfo.dwFlags = STARTF_USESTDHANDLES;
     startupInfo.hStdInput = hPipeStdInR;
+    startupInfo.hStdOutput = hStdOutput;
+    startupInfo.hStdError = hStdError;
 
     handle_bool(CreateProcess(
         convert_string_to_wstring(gnuplot_exe_path).c_str(),
