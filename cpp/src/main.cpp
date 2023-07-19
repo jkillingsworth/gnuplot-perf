@@ -14,8 +14,13 @@
 //-------------------------------------------------------------------------------------------------
 
 constexpr auto n = 100;
+
 constexpr auto gnuplot_exe_path_542 = "C:\\gnuplot542\\bin\\gnuplot.exe";
 constexpr auto gnuplot_exe_path_548 = "C:\\gnuplot548\\bin\\gnuplot.exe";
+
+constexpr auto enable_singular_proc_seq = true;
+constexpr auto enable_multiple_proc_seq = false;
+constexpr auto enable_multiple_proc_par = false;
 
 //-------------------------------------------------------------------------------------------------
 
@@ -111,9 +116,14 @@ int main()
 
     for (auto gnuplot_exe_path : paths)
     {
-        execute(gnuplot_exe_path, plots, { run_singular_proc_seq, "singular-proc-seq" });
-        execute(gnuplot_exe_path, plots, { run_multiple_proc_seq, "multiple-proc-seq" });
-        execute(gnuplot_exe_path, plots, { run_multiple_proc_par, "multiple-proc-par" });
+        if (enable_singular_proc_seq)
+            execute(gnuplot_exe_path, plots, { run_singular_proc_seq, "singular-proc-seq" });
+
+        if (enable_multiple_proc_seq)
+            execute(gnuplot_exe_path, plots, { run_multiple_proc_seq, "multiple-proc-seq" });
+
+        if (enable_multiple_proc_par)
+            execute(gnuplot_exe_path, plots, { run_multiple_proc_par, "multiple-proc-par" });
     }
 
     return 0;

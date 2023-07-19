@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 //-------------------------------------------------------------------------------------------------
 
 const int n = 100;
+
 const string gnuplotExePath542 = "C:\\gnuplot542\\bin\\gnuplot.exe";
 const string gnuplotExePath548 = "C:\\gnuplot548\\bin\\gnuplot.exe";
+
+const bool enableSingularProcSeq = true;
+const bool enableMultipleProcSeq = false;
+const bool enableMultipleProcPar = false;
 
 //-------------------------------------------------------------------------------------------------
 
@@ -85,7 +90,12 @@ var paths = new string[]
 
 foreach (var gnuplotExePath in paths)
 {
-    Execute(gnuplotExePath, plots, RunSingularProcSeq, "singular-proc-seq");
-    Execute(gnuplotExePath, plots, RunMultipleProcSeq, "multiple-proc-seq");
-    Execute(gnuplotExePath, plots, RunMultipleProcPar, "multiple-proc-par");
+    if (enableSingularProcSeq)
+        Execute(gnuplotExePath, plots, RunSingularProcSeq, "singular-proc-seq");
+
+    if (enableMultipleProcSeq)
+        Execute(gnuplotExePath, plots, RunMultipleProcSeq, "multiple-proc-seq");
+
+    if (enableMultipleProcPar)
+        Execute(gnuplotExePath, plots, RunMultipleProcPar, "multiple-proc-par");
 }

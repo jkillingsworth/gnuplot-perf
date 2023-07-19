@@ -6,8 +6,13 @@ open System.Diagnostics
 //-------------------------------------------------------------------------------------------------
 
 let n = 100
+
 let gnuplotExePath542 = "C:\\gnuplot542\\bin\\gnuplot.exe";
 let gnuplotExePath548 = "C:\\gnuplot548\\bin\\gnuplot.exe";
+
+let enableSingularProcSeq = true
+let enableMultipleProcSeq = false
+let enableMultipleProcPar = false
 
 //-------------------------------------------------------------------------------------------------
 
@@ -68,6 +73,12 @@ let paths = [|
 |]
 
 for gnuplotExePath in paths do
-    execute gnuplotExePath plots runSingularProcSeq "singular-proc-seq"
-    execute gnuplotExePath plots runMultipleProcSeq "multiple-proc-seq"
-    execute gnuplotExePath plots runMultipleProcPar "multiple-proc-par"
+
+    if enableSingularProcSeq then
+        execute gnuplotExePath plots runSingularProcSeq "singular-proc-seq"
+
+    if enableMultipleProcSeq then
+        execute gnuplotExePath plots runMultipleProcSeq "multiple-proc-seq"
+
+    if enableMultipleProcPar then
+        execute gnuplotExePath plots runMultipleProcPar "multiple-proc-par"
