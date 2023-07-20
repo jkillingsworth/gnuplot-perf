@@ -55,7 +55,7 @@ set linetype 2 linewidth 1 linecolor rgb '#ff4040'
 set linetype 3 linewidth 1 linecolor rgb '#ffa0a0'
 set linetype 4 linewidth 1 linecolor rgb '#ffa0a0'
 
-plot $data0 using 1:2:3:4:5 with financebars title sprintf('Chart %02i', index),\
+plot $data0 using 1:2:3:4:5 with financebars title sprintf('Chart %03i', index),\
      $data1 using 1:2 with lines notitle,\
      $data1 using 1:3 with lines notitle,\
      $data1 using 1:4 with lines notitle

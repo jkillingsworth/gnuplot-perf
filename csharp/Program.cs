@@ -79,7 +79,7 @@ var plots = new string[n];
 
 for (var i = 0; i < n; i++)
 {
-    plots[i] = Gp.Chart.CreatePlot($"./output/chart-{i:d2}.svg", lines, i);
+    plots[i] = Gp.Chart.CreatePlot($"./output/chart-{i:d3}.svg", lines, i);
 }
 
 var paths = new string[]

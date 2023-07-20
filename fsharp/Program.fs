@@ -65,7 +65,7 @@ let execute gnuplotExePath plots run mode =
 
 Directory.CreateDirectory("./output/") |> ignore
 let lines = File.ReadAllLines("./data.csv")
-let plots = Array.init n (fun i -> Gp.Chart.createPlot $"./output/chart-{i:d2}.svg" lines i)
+let plots = Array.init n (fun i -> Gp.Chart.createPlot $"./output/chart-{i:d3}.svg" lines i)
 
 let paths = [|
     gnuplotExePath542

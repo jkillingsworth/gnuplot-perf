@@ -103,7 +103,7 @@ int main()
 
     for (auto i = 0; i < n; i++)
     {
-        auto path = std::format("./output/chart-{0:02}.svg", i);
+        auto path = std::format("./output/chart-{0:03}.svg", i);
         auto plot = gp::chart::create_plot(path, lines, i);
         plots.push_back(plot);
     }
