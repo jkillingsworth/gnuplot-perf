@@ -158,14 +158,6 @@ static void result_wait(DWORD result)
 
 gp::proc::proc(const std::string& gnuplot_exe_path)
 {
-    HANDLE hJob = CreateJobObject(NULL, NULL);
-    result_hjob(hJob);
-
-    JOBOBJECT_EXTENDED_LIMIT_INFORMATION jobInfo = {};
-    jobInfo.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-
-    result_bool(SetInformationJobObject(hJob, JobObjectExtendedLimitInformation, &jobInfo, sizeof(jobInfo)));
-
     SECURITY_ATTRIBUTES securityAttributes = {};
     securityAttributes.nLength = sizeof(SECURITY_ATTRIBUTES);
     securityAttributes.bInheritHandle = TRUE;
@@ -199,6 +191,13 @@ gp::proc::proc(const std::string& gnuplot_exe_path)
         &processInformation
     ));
 
+    HANDLE hJob = CreateJobObject(NULL, NULL);
+    result_hjob(hJob);
+
+    JOBOBJECT_EXTENDED_LIMIT_INFORMATION jobInfo = {};
+    jobInfo.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+
+    result_bool(SetInformationJobObject(hJob, JobObjectExtendedLimitInformation, &jobInfo, sizeof(jobInfo)));
     result_bool(AssignProcessToJobObject(hJob, processInformation.hProcess));
     result_fail(ResumeThread(processInformation.hThread));
 }
