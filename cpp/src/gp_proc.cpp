@@ -96,7 +96,7 @@ static void report_result_error()
     std::exit(1);
 }
 
-static void handle_hstd(HANDLE result)
+static void result_hstd(HANDLE result)
 {
     if (result == INVALID_HANDLE_VALUE)
     {
@@ -104,7 +104,7 @@ static void handle_hstd(HANDLE result)
     }
 }
 
-static void handle_hjob(HANDLE result)
+static void result_hjob(HANDLE result)
 {
     if (result == NULL)
     {
@@ -112,7 +112,7 @@ static void handle_hjob(HANDLE result)
     }
 }
 
-static void handle_bool(BOOL result)
+static void result_bool(BOOL result)
 {
     if (result == FALSE)
     {
@@ -120,7 +120,7 @@ static void handle_bool(BOOL result)
     }
 }
 
-static void handle_fail(DWORD result)
+static void result_fail(DWORD result)
 {
     if (result == (DWORD)-1)
     {
@@ -128,7 +128,7 @@ static void handle_fail(DWORD result)
     }
 }
 
-static void handle_wait(DWORD result)
+static void result_wait(DWORD result)
 {
     if (result == WAIT_FAILED)
     {
@@ -159,25 +159,25 @@ static void handle_wait(DWORD result)
 gp::proc::proc(const std::string& gnuplot_exe_path)
 {
     HANDLE hJob = CreateJobObject(NULL, NULL);
-    handle_hjob(hJob);
+    result_hjob(hJob);
 
     JOBOBJECT_EXTENDED_LIMIT_INFORMATION jobInfo = {};
     jobInfo.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
 
-    handle_bool(SetInformationJobObject(hJob, JobObjectExtendedLimitInformation, &jobInfo, sizeof(jobInfo)));
+    result_bool(SetInformationJobObject(hJob, JobObjectExtendedLimitInformation, &jobInfo, sizeof(jobInfo)));
 
     SECURITY_ATTRIBUTES securityAttributes = {};
     securityAttributes.nLength = sizeof(SECURITY_ATTRIBUTES);
     securityAttributes.bInheritHandle = TRUE;
     securityAttributes.lpSecurityDescriptor = NULL;
 
-    handle_bool(CreatePipe(&hPipeStdInR, &hPipeStdInW, &securityAttributes, 0));
+    result_bool(CreatePipe(&hPipeStdInR, &hPipeStdInW, &securityAttributes, 0));
 
     HANDLE hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
-    handle_hstd(hStdOutput);
+    result_hstd(hStdOutput);
 
     HANDLE hStdError = GetStdHandle(STD_ERROR_HANDLE);
-    handle_hstd(hStdError);
+    result_hstd(hStdError);
 
     STARTUPINFO startupInfo = {};
     startupInfo.cb = sizeof(STARTUPINFO);
@@ -186,7 +186,7 @@ gp::proc::proc(const std::string& gnuplot_exe_path)
     startupInfo.hStdOutput = hStdOutput;
     startupInfo.hStdError = hStdError;
 
-    handle_bool(CreateProcess(
+    result_bool(CreateProcess(
         convert_string_to_wstring(gnuplot_exe_path).c_str(),
         NULL,
         NULL,
@@ -199,26 +199,26 @@ gp::proc::proc(const std::string& gnuplot_exe_path)
         &processInformation
     ));
 
-    handle_bool(AssignProcessToJobObject(hJob, processInformation.hProcess));
-    handle_fail(ResumeThread(processInformation.hThread));
+    result_bool(AssignProcessToJobObject(hJob, processInformation.hProcess));
+    result_fail(ResumeThread(processInformation.hThread));
 }
 
 void gp::proc::write(const std::string& plot)
 {
-    handle_bool(WriteFile(hPipeStdInW, plot.c_str(), (DWORD)plot.length(), NULL, NULL));
-    handle_bool(FlushFileBuffers(hPipeStdInW));
+    result_bool(WriteFile(hPipeStdInW, plot.c_str(), (DWORD)plot.length(), NULL, NULL));
+    result_bool(FlushFileBuffers(hPipeStdInW));
 }
 
 void gp::proc::exit_wait()
 {
     write("exit\n");
-    handle_wait(WaitForSingleObject(processInformation.hProcess, INFINITE));
+    result_wait(WaitForSingleObject(processInformation.hProcess, INFINITE));
 }
 
 gp::proc::~proc()
 {
-    handle_bool(CloseHandle(processInformation.hProcess));
-    handle_bool(CloseHandle(processInformation.hThread));
-    handle_bool(CloseHandle(hPipeStdInR));
-    handle_bool(CloseHandle(hPipeStdInW));
+    result_bool(CloseHandle(processInformation.hProcess));
+    result_bool(CloseHandle(processInformation.hThread));
+    result_bool(CloseHandle(hPipeStdInR));
+    result_bool(CloseHandle(hPipeStdInW));
 }
