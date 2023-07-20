@@ -191,7 +191,7 @@ gp::proc::proc(const std::string& gnuplot_exe_path)
         &processInformation
     ));
 
-    HANDLE hJob = CreateJobObject(NULL, NULL);
+    hJob = CreateJobObject(NULL, NULL);
     result_hjob(hJob);
 
     JOBOBJECT_EXTENDED_LIMIT_INFORMATION jobInfo = {};
@@ -220,4 +220,5 @@ gp::proc::~proc()
     result_bool(CloseHandle(processInformation.hThread));
     result_bool(CloseHandle(hPipeStdInR));
     result_bool(CloseHandle(hPipeStdInW));
+    result_bool(CloseHandle(hJob));
 }

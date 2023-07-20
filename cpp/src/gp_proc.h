@@ -19,5 +19,6 @@ namespace gp
         PROCESS_INFORMATION processInformation = {};
         HANDLE hPipeStdInR = NULL;
         HANDLE hPipeStdInW = NULL;
+        HANDLE hJob = NULL;
     };
 }
