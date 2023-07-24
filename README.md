@@ -1,6 +1,6 @@
 ## Overview
 
-This is a set of tests that compare performance differences between two different version of Gnuplot running on a Windows system.
+This repo contains a set of tests that compare the performance of two different versions of Gnuplot running on a Windows system.
 
 To run the tests, the following prerequisites need to be in place:
 
@@ -17,7 +17,7 @@ The test suite is implemented in three different programming languages. The buil
 
 * Navigate to the `cpp` folder
 * Open the `ConsoleApp.sln` file
-* Press `Ctrl`+`F5` to run the program
+* Press `Ctrl`+`F5` to build and run the program
 
 #### MSBuild
 
@@ -71,7 +71,7 @@ bin/console_app.exe
 
 * Navigate to the `csharp` folder
 * Open the `ConsoleApp.sln` file
-* Press `Ctrl`+`F5` to run the program
+* Press `Ctrl`+`F5` to build and run the program
 
 #### .NET Command Line Interface
 
@@ -88,7 +88,7 @@ dotnet run --project ConsoleApp.csproj -c Release
 
 * Navigate to the `fsharp` folder
 * Open the `ConsoleApp.sln` file
-* Press `Ctrl`+`F5` to run the program
+* Press `Ctrl`+`F5` to build and run the program
 
 #### .NET Command Line Interface
 
