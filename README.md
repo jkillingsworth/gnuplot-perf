@@ -9,7 +9,7 @@ To run the tests, the following prerequisites need to be in place:
 
 You can use [7-Zip](https://www.7-zip.org/) to unpack the files.
 
-The test suite is implemented in three different programming languages. The build and run instructions are detailed below.
+The test suite is implemented in three different programming languages. The build and run instructions are detailed below. In addition, there are scripts that can run the tests directly from either a Bash prompt or a Windows command prompt without building any of the test programs from source.
 
 ## C++
 
@@ -97,4 +97,26 @@ Open the command prompt and enter the following commands:
 ```
 cd fsharp
 dotnet run --project ConsoleApp.fsproj -c Release
+```
+
+## Scripts
+
+#### Windows Command Prompt
+
+Enter the following commands:
+
+```
+cd scripts
+run-piped-from-stdin.bat
+run-direct-from-file.bat
+```
+
+#### MSYS2 Bash Prompt
+
+Enter the following commands:
+
+```
+cd scripts
+./run-piped-from-stdin.sh
+./run-direct-from-file.sh
 ```
