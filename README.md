@@ -1,6 +1,6 @@
 ## Overview
 
-This repo contains a set of tests that compare the performance of two different versions of Gnuplot running on a Windows system.
+This repo contains a suite of tests that compare the performance of piped input for two different versions of Gnuplot running on a Windows system.
 
 To run the tests, the following prerequisites need to be in place:
 
